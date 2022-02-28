@@ -90,8 +90,11 @@ describe('Message', function () {
         });
 
         it('can delete a message for everyone', async function () {
+<<<<<<< HEAD
             this.timeout(5000);
 
+=======
+>>>>>>> 6ab98a53658b5e918ad60cb4f12eb82ab15b838f
             message = await chat.sendMessage('sneaky message');
             await helper.sleep(1000);
 

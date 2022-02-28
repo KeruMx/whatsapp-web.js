@@ -8,6 +8,7 @@ const Contact = require('../src/structures/Contact');
 const Message = require('../src/structures/Message');
 const MessageMedia = require('../src/structures/MessageMedia');
 const Location = require('../src/structures/Location');
+const LegacySessionAuth = require('../src/authStrategies/LegacySessionAuth');
 const { MessageTypes, WAState } = require('../src/util/Constants');
 
 const expect = chai.expect;
@@ -71,7 +72,11 @@ describe('Client', function() {
 
             expect(authenticatedCallback.called).to.equal(true);
 
+<<<<<<< HEAD
             if(helper.isUsingDeprecatedSession()) {
+=======
+            if(helper.isUsingLegacySession()) {
+>>>>>>> 6ab98a53658b5e918ad60cb4f12eb82ab15b838f
                 const newSession = authenticatedCallback.args[0][0];
                 expect(newSession).to.have.key([
                     'WABrowserId', 
@@ -87,6 +92,83 @@ describe('Client', function() {
             await client.destroy();
         });
 
+<<<<<<< HEAD
+=======
+        describe('LegacySessionAuth', function () {
+            it('should fail auth if session is invalid', async function() {
+                this.timeout(40000);
+        
+                const authFailCallback = sinon.spy();
+                const qrCallback = sinon.spy();
+                const readyCallback = sinon.spy();
+        
+                const client = helper.createClient({
+                    options: {
+                        authStrategy: new LegacySessionAuth({
+                            session: {
+                                WABrowserId: 'invalid', 
+                                WASecretBundle: 'invalid', 
+                                WAToken1: 'invalid', 
+                                WAToken2: 'invalid'
+                            },
+                            restartOnAuthFail: false,
+                        }),
+                    }
+                });
+        
+                client.on('qr', qrCallback);
+                client.on('auth_failure', authFailCallback);
+                client.on('ready', readyCallback);
+        
+                client.initialize();
+        
+                await helper.sleep(25000);
+        
+                expect(authFailCallback.called).to.equal(true);
+                expect(authFailCallback.args[0][0]).to.equal('Unable to log in. Are the session details valid?');
+        
+                expect(readyCallback.called).to.equal(false);
+                expect(qrCallback.called).to.equal(false);
+        
+                await client.destroy();
+            });
+        
+            it('can restart without a session if session was invalid and restartOnAuthFail=true', async function() {
+                this.timeout(40000);
+        
+                const authFailCallback = sinon.spy();
+                const qrCallback = sinon.spy();
+        
+                const client = helper.createClient({
+                    options: {
+                        authStrategy: new LegacySessionAuth({
+                            session: {
+                                WABrowserId: 'invalid', 
+                                WASecretBundle: 'invalid', 
+                                WAToken1: 'invalid', 
+                                WAToken2: 'invalid'
+                            },
+                            restartOnAuthFail: true,
+                        }),
+                    }
+                });
+        
+                client.on('auth_failure', authFailCallback);
+                client.on('qr', qrCallback);
+        
+                client.initialize();
+        
+                await helper.sleep(35000);
+        
+                expect(authFailCallback.called).to.equal(true);
+                expect(qrCallback.called).to.equal(true);
+                expect(qrCallback.args[0][0]).to.have.lengthOf(152);
+        
+                await client.destroy();
+            });
+        });
+
+>>>>>>> 6ab98a53658b5e918ad60cb4f12eb82ab15b838f
         describe('Non-MD only', function () {
             if(!isMD) {
                 it('can take over if client was logged in somewhere else with takeoverOnConflict=true', async function() {
@@ -127,6 +209,7 @@ describe('Client', function() {
     
                     await client1.destroy();
                 });
+<<<<<<< HEAD
 
                 it('should fail auth if session is invalid', async function() {
                     this.timeout(40000);
@@ -199,6 +282,8 @@ describe('Client', function() {
             
                     await client.destroy();
                 });
+=======
+>>>>>>> 6ab98a53658b5e918ad60cb4f12eb82ab15b838f
             }
         }); 
     });
@@ -566,8 +651,6 @@ END:VCARD`;
 
         describe('Search messages', function () {
             it('can search for messages', async function () {
-                this.timeout(5000);
-
                 const m1 = await client.sendMessage(remoteId, 'I\'m searching for Super Mario Brothers');
                 const m2 = await client.sendMessage(remoteId, 'This also contains Mario');
                 const m3 = await client.sendMessage(remoteId, 'Nothing of interest here, just Luigi');

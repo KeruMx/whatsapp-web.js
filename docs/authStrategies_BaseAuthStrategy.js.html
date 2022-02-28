@@ -4,7 +4,7 @@
 <head>
   <meta name="generator" content="JSDoc 3.6.7">
   <meta charset="utf-8">
-  <title>whatsapp-web.js 1.16.1 &raquo; Source: structures/Base.js</title>
+  <title>whatsapp-web.js 1.16.1 &raquo; Source: authStrategies/BaseAuthStrategy.js</title>
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
@@ -26,31 +26,33 @@
         </div>
         <div id="jsdoc-main" role="main">
           <header class="page-header">
-            <h1>Source: structures/Base.js</h1>
+            <h1>Source: authStrategies/BaseAuthStrategy.js</h1>
           </header>
           <article>
             <pre class="prettyprint linenums"><code>&#x27;use strict&#x27;;
 
 /**
- * Represents a WhatsApp data structure
+ * Base class which all authentication strategies extend
  */
-class Base {
-    constructor(client) {
-        /**
-         * The client that instantiated this
-         * @readonly
-         */
-        Object.defineProperty(this, &#x27;client&#x27;, { value: client });
+class BaseAuthStrategy {
+    constructor() {}
+    setup(client) {
+        this.client &#x3D; client;
     }
-
-    _clone() {
-        return Object.assign(Object.create(this), this);
+    async beforeBrowserInitialized() {}
+    async afterBrowserInitialized() {}
+    async onAuthenticationNeeded() {
+        return {
+            failed: false,
+            restart: false,
+            failureEventPayload: undefined
+        };
     }
-    
-    _patch(data) { return data; }
+    async getAuthEventPayload() {}
+    async logout() {}
 }
 
-module.exports &#x3D; Base;</code></pre>
+module.exports &#x3D; BaseAuthStrategy;</code></pre>
           </article>
         </div>
       </div>

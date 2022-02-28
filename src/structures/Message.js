@@ -135,6 +135,12 @@ class Message extends Base {
         this.hasQuotedMsg = data.quotedMsg ? true : false;
 
         /**
+         * Indicates the duration of the message in seconds
+         * @type {string}
+         */
+        this.duration = data.duration ? data.duration : undefined;
+
+        /**
          * Location information contained in the message, if the message is type "location"
          * @type {Location}
          */
@@ -241,6 +247,32 @@ class Message extends Base {
         return this.fromMe ? this.to : this.from;
     }
 
+    async reload() {
+        const newData = await this.client.pupPage.evaluate((msgId) => {
+            const msg = window.Store.Msg.get(msgId);
+            if(!msg) return null;
+            return window.WWebJS.getMessageModel(msg);
+        }, this.id._serialized);
+
+        if(!newData) return null;
+        
+        this._patch(newData);
+        return this;
+    }
+
+    /**
+     * Returns message in a raw format
+     * @type {Object}
+     */
+    get rawData() {
+        return this._data;
+    }
+    
+    /**
+     * Reloads this Message object's data in-place with the latest values from WhatsApp Web. 
+     * Note that the Message must still be in the web app cache for this to work, otherwise will return null.
+     * @returns {Promise<Message>}
+     */
     async reload() {
         const newData = await this.client.pupPage.evaluate((msgId) => {
             const msg = window.Store.Msg.get(msgId);
@@ -464,7 +496,7 @@ class Message extends Base {
             const msg = window.Store.Msg.get(msgId);
             if (!msg) return null;
 
-            return await window.Store.MessageInfo.sendQueryMsgInfo(msg.id);
+            return await window.Store.MessageInfo.sendQueryMsgInfo(msg);
         }, this.id._serialized);
 
         return info;

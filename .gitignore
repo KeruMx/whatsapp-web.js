@@ -64,12 +64,17 @@ typings/
 # next.js build output
 .next
 
-# macOS Thumbnails
+# macOS
 ._*
+.DS_Store
 
 # Test sessions
 *session.json
+<<<<<<< HEAD
 
 # user data
 WWebJS/
 userDataDir/
+=======
+.wwebjs_auth/
+>>>>>>> 6ab98a53658b5e918ad60cb4f12eb82ab15b838f

@@ -7,8 +7,11 @@ exports.DefaultOptions = {
         headless: true,
         defaultViewport: null
     },
+<<<<<<< HEAD
     dataPath: './WWebJS/',
     useDeprecatedSessionAuth: false,
+=======
+>>>>>>> 6ab98a53658b5e918ad60cb4f12eb82ab15b838f
     authTimeoutMs: 0,
     qrMaxRetries: 0,
     takeoverOnConflict: false,
